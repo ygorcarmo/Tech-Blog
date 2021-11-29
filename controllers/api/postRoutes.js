@@ -1,34 +1,15 @@
 const router = require('express').Router();
-const { Post } = require('../../models');
+const { Project } = require('../../models');
 const withAuth = require('../../utils/auth');
-
-router.put('/:id', withAuth, async (req, res) => {
-
-  try {
-
-    const [updatePost] = await Post.update( req.body,
-      { where: { id: req.body.id} 
-    });
-
-      if(updatePost > 0) {
-        res.status(200).json({message:"Updated Successfuly!"});
-      } else {
-        res.status(404).json({message:"Post Not Found!"});
-      }
-
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
 
 router.post('/', withAuth, async (req, res) => {
   try {
-    const newPost = await Post.create({
+    const newProject = await Project.create({
       ...req.body,
       user_id: req.session.user_id,
     });
 
-    res.status(200).json(newPost);
+    res.status(200).json(newProject);
   } catch (err) {
     res.status(400).json(err);
   }
@@ -36,45 +17,22 @@ router.post('/', withAuth, async (req, res) => {
 
 router.delete('/:id', withAuth, async (req, res) => {
   try {
-    const postData = await Post.destroy({
+    const projectData = await Project.destroy({
       where: {
         id: req.params.id,
         user_id: req.session.user_id,
       },
     });
 
-    if (!postData) {
-      res.status(404).json({ message: 'No post found with this id!' });
+    if (!projectData) {
+      res.status(404).json({ message: 'No project found with this id!' });
       return;
     }
 
-    res.status(200).json(postData);
+    res.status(200).json(projectData);
   } catch (err) {
     res.status(500).json(err);
   }
-});
-
-router.get( "/", withAuth, async ( req, res ) => {
-  try{
-    const userName = await User.findOne({ 
-      attributes:[ "name", ],
-      where: 
-      { 
-        id: req.session.user_id,
-      }
-    });
-  
-  const user = userName.get({ plain: true });
-  res.render( "new-post", 
-  { 
-    user,
-    layout: "dashboard", 
-    logged_in: req.session.logged_in,
-  });
-  } catch ( err ) {
-    res.status(500).json(err);
-  }
-
 });
 
 module.exports = router;
