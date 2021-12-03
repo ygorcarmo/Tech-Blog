@@ -1,0 +1,20 @@
+                <h5>Comment:</h5>
+{{#if comments.length}}  
+    {{#each comments as |comment|}}
+        <div class="card border-info mb-3">
+            <div class="card-body">
+                <p class="card-text p-2">{{comment.comment}}</p>                
+            <div class="card-footer bg-transparent border-success">
+            </div>
+                <div class="p-1" style="font-size: 0.8rem;">
+                    <div style="font-weight: bold">Comment by:
+                        <span> {{comment.user.name}} </span>
+                    </div>                    
+                    <div style="font-weight:bold">Made on:
+                        <span>{{format_date comment.date_created}} </span> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{/if}}
